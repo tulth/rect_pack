@@ -189,22 +189,25 @@ def pairwiseIter(iterable):
 
 def main(argv):
     if ((len(argv) < 5) or (len(argv) % 2 != 1)):
-        print("Usage: MaxRectsBinPackTest binWidth binHeight w_0 h_0 w_1 h_1 w_2 h_2 ... w_n h_n\n")
+        print("Usage: ./rect_pack.py binWidth binHeight w_0 h_0 w_1 h_1 w_2 h_2 ... w_n h_n\n")
         print("       where binWidth and binHeight define the size of the bin.\n")
         print("       w_i is the width of the i'th rectangle to pack, and h_i the height.\n")
-        print("Example: MaxRectsBinPackTest 256 256 30 20 50 20 10 80 90 20\n")
+        print("Example: ./rect_pack.py 256 256 30 20 50 20 10 80 90 20\n")
     argNums = [float(arg) for arg in argv[1:]]
     binSize = argNums[0:2]
     print("Initializing bin to size {}x{}".format(*binSize))
     rectBin = MaxRectsBinPack(*binSize)
     widthByHeights = [(rectWidth, rectHeight,) for rectWidth, rectHeight in pairwiseIter(argNums[2:])]
-    widthByHeights = []
-    np.random.seed(42)
-    for i in range(200):
-        width = np.random.uniform(5, 20)
-        height = np.random.uniform(5, 20)
-        widthByHeights.append((width, height))
-    widthByHeights = list(reversed(sorted(widthByHeights, key= lambda wByH: wByH[0] * wByH[1])))
+    # widthByHeights = []
+    # np.random.seed(42)
+    # for i in range(200):
+    #     width = np.random.uniform(5, 20)
+    #     height = np.random.uniform(5, 20)
+    #     widthByHeights.append((width, height))
+    widthByHeights = list(sorted(widthByHeights, key= lambda wByH: -wByH[0] * wByH[1]))  # decreasing area
+    #widthByHeights = list(reversed(sorted(widthByHeights, key= lambda wByH: (min(*wByH), max(*wByH)))))  # short side, then long
+    # widthByHeights = list(reversed(sorted(widthByHeights, key= lambda wByH: wByH[0] + wByH[1])))  # decreasing perimiter
+    # widthByHeights = list(reversed(sorted(widthByHeights, key= lambda wByH: max(wByH[0], wByH[1])))) # decreasing max side length
     failedCount = 0
     for num, (rectWidth, rectHeight) in enumerate(widthByHeights):
         print("# {} Packing rectangle of size {}x{}: ".format(num, rectWidth, rectHeight), end="")
