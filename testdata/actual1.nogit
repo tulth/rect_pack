@@ -1,0 +1,8 @@
+Initializing bin to size 1982.0x1982.0
+# 0 Packing rectangle of size 713.0x912.0: Packed to (x,y)=(0,0), (w,h)=(713.0,912.0). Free space left: 83.45%
+# 1 Packing rectangle of size 713.0x912.0: Packed to (x,y)=(0,912.0), (w,h)=(713.0,912.0). Free space left: 66.89%
+# 2 Packing rectangle of size 1013.0x473.0: Packed to (x,y)=(713.0,0), (w,h)=(1013.0,473.0). Free space left: 54.70%
+# 3 Packing rectangle of size 1013.0x473.0: Packed to (x,y)=(713.0,473.0), (w,h)=(1013.0,473.0). Free space left: 42.50%
+# 4 Packing rectangle of size 503.0x773.0: Packed to (x,y)=(713.0,946.0), (w,h)=(503.0,773.0). Free space left: 32.60%
+# 5 Packing rectangle of size 503.0x773.0: Packed to (x,y)=(1216.0,946.0), (w,h)=(503.0,773.0). Free space left: 22.70%
+Done. All rectangles packed.

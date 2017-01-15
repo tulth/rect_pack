@@ -18,8 +18,7 @@ class Rect(object):
         return Rect(self.x, self.y, self.width, self.height, self.data, self.rotated)
 
     def rotate(self, ):
-        self.width = self.height
-        self.height = self.width
+        self.width, self.height = self.height, self.width
         self.rotated = not self.rotated
 
     def __str__(self, ):
@@ -94,7 +93,7 @@ class RectPack(object):
 
     def findPositionForNewNodeBestShortSideFit(self, rect):
         width, height = rect.width, rect.height
-        bestNode = Rect(0, 0, 0, 0) # rect.copy()
+        #bestNode = Rect(0, 0, 0, 0) # rect.copy()
         bestNode = rect.copy()
         bestShortSideFit = None
         bestLongSideFit = None
@@ -190,17 +189,18 @@ def pairwiseIter(iterable):
 
 def main(argv):
     if ((len(argv) < 5) or (len(argv) % 2 != 1)):
-        print("Usage: RectPackTest binWidth binHeight w_0 h_0 w_1 h_1 w_2 h_2 ... w_n h_n\n")
+        print("Usage: python -m rect_pack.rect_pack binWidth binHeight w_0 h_0 w_1 h_1 w_2 h_2 ... w_n h_n\n")
         print("       where binWidth and binHeight define the size of the bin.\n")
         print("       w_i is the width of the i'th rectangle to pack, and h_i the height.\n")
-        print("Example: RectPackTest 256 256 30 20 50 20 10 80 90 20\n")
+        print("Example: python -m rect_pack.rect_pack 256 256 30 20 50 20 10 80 90 20\n")
     argNums = [float(arg) for arg in argv[1:]]
     binSize = argNums[0:2]
     print("Initializing bin to size {}x{}".format(*binSize))
     rectBin = RectPack(*binSize)
     widthByHeights = [(rectWidth, rectHeight,) for rectWidth, rectHeight in pairwiseIter(argNums[2:])]
     # widthByHeights = list(sorted(widthByHeights, key= lambda wByH: -wByH[0] * wByH[1]))
-    inRects = [Rect(0, 0, width, height) for width, height in widthByHeights]
+    # inRects = [Rect(0, 0, width, height) for width, height in widthByHeights]
+    inRects = [Rect(0, 0, width, height, data="{},{},{}".format(num, width, height)) for num, (width, height) in enumerate(widthByHeights)]
     rectBin.pack(inRects)
     failedCount = 0
     for num, (packedRect, occupancy) in enumerate(zip(rectBin.packedRectList, rectBin.occupancyHistory)):
@@ -219,33 +219,13 @@ def main(argv):
     else:
         print("Done. {} rectangles failed packing.".format(failedCount))
         
-    # for num, (rectWidth, rectHeight) in enumerate(widthByHeights):
-    #     print("# {} Packing rectangle of size {}x{}: ".format(num, rectWidth, rectHeight), end="")
-    #     # Perform the packing.
-    #     packedRect = rectBin.insert(Rect(0, 0, rectWidth, rectHeight))
-    #     # Test success or failure.
-    #     if packedRect.height > 0:
-    #         print("Packed to (x,y)=({},{}), (w,h)=({},{}). Free space left: {:.2f}%".format(
-    #             packedRect.x, packedRect.y, packedRect.width, packedRect.height,
-    #             100.0 - rectBin.occupancy()*100.0))
-    #     else:
-    #         print("Failed! Could not find a proper position to pack this rectangle into. Skipping this one.")
-    #         failedCount += 1
-    # if not failedCount:
-    #     print("Done. All rectangles packed.")
-    # else:
-    #     print("Done. {} rectangles failed packing.".format(failedCount))
-    
 
     ## let's plot it
     import pylab as pl
     import matplotlib.colorbar as cbar
     colors = pl.cm.jet(np.asarray(range(len(widthByHeights))) / len(widthByHeights))
     ax = pl.subplot(111)
-    rectBin = RectPack(*binSize)
-    for color, (rectWidth, rectHeight) in zip(colors, widthByHeights):
-        # Perform the packing.
-        packedRect = rectBin.insert(Rect(0, 0, rectWidth, rectHeight))
+    for packedRect in rectBin.packedRectList:
         # Test success or failure.
         if packedRect.height > 0:
             import random
@@ -259,6 +239,9 @@ def main(argv):
     cax, _ = cbar.make_axes(ax) 
     cb2 = cbar.ColorbarBase(cax, cmap=pl.cm.jet) 
 
+    # for packedRect in rectBin.packedRectList:
+    #     print(packedRect)
+        
     ax.set_xlim(0, binSize[0])
     ax.set_ylim(0, binSize[1])
     pl.show()        
